@@ -1,4 +1,4 @@
-import { File } from "../domain/file";
+import { File } from "@domain/file";
 import { Controller } from "./controller_abstract";
 
 export class FileController extends Controller{

@@ -1,9 +1,9 @@
 import { BadRequestException, Body, Controller, Get, Inject, NotFoundException, Param, Post, Res, UploadedFiles, UseInterceptors } from '@nestjs/common';
-import { FileController } from '../../../controllers/file_controller';
+import { FileController } from '@controllers/file_controller';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { CreateFileDto } from '../../validators/query_validators/create_file_dto';
-import { QueryValidator } from '../../validators/query_validators/query_validator';
-import { Loggable } from '../../../helpers/logger/loggable_abstract';
+import { CreateFileDto } from '@validators/query_validators/create_file_dto';
+import { QueryValidator } from '@validators/query_validators/query_validator';
+import { Loggable } from '@helpers/logger/loggable_abstract';
 import { NestLogger } from './nest_logger';
 import { Response } from 'express'; 
 

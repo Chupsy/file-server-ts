@@ -1,7 +1,7 @@
 import mariadb from 'mariadb';
 import { DataPersister } from '../data_persister_abstract';
-import { File } from '../../../domain/file';
-import { FileNotFoundError } from '../../../helpers/errors/file_not_found.exception';
+import { File } from '@domain/file';
+import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
 
 export class MariaDBPersister extends DataPersister{
 

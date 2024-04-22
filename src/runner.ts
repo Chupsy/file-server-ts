@@ -1,10 +1,10 @@
-import { HttpEntrypoint } from "./presentations/entrypoints/http/http_entrypoint";
-import { FileController } from "./controllers/file_controller";
-import { Logger } from "./helpers/logger/logger_abstract";
-import { WinstonLogger } from "./helpers/logger/winston/winston";
-import { QueryValidator } from "./presentations/validators/query_validators/query_validator";
-import { MariaDBPersister } from "./persistence/data_persisters/MariaDB/mariadb_data_persister";
-import { LocalFilePersister } from "./persistence/file_persisters/local_file_persister/local_file_persister";
+import { HttpEntrypoint } from "@presentations/entrypoints/http/http_entrypoint";
+import { FileController } from "@controllers/file_controller";
+import { Logger } from "@helpers/logger/logger_abstract";
+import { WinstonLogger } from "@helpers/logger/winston/winston";
+import { QueryValidator } from "@validators/query_validators/query_validator";
+import { MariaDBPersister } from "@persistence/data_persisters/MariaDB/mariadb_data_persister";
+import { LocalFilePersister } from "@persistence/file_persisters/local_file_persister/local_file_persister";
 
 export class Runner{
 

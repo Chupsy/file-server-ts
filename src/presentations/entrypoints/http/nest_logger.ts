@@ -1,5 +1,5 @@
 import { ConsoleLogger, Injectable, Scope } from "@nestjs/common";
-import {Logger as CustomLogger, LOGGER_SEVERITY} from "../../../helpers/logger/logger_abstract";
+import {Logger as CustomLogger, LOGGER_SEVERITY} from "@helpers/logger/logger_abstract";
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class NestLogger extends ConsoleLogger {

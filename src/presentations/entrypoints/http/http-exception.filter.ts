@@ -1,8 +1,8 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { NestLogger } from './nest_logger';
-import { Loggable } from '../../../helpers/logger/loggable_abstract';
-import { Exception } from '../../../helpers/errors/exception_abstract';
+import { Loggable } from '@helpers/logger/loggable_abstract';
+import { Exception } from '@helpers/errors/exception_abstract';
 
 @Injectable()
 @Catch()

@@ -1,9 +1,9 @@
 import { NestFactory } from "@nestjs/core";
 
 import { Entrypoint } from "../entrypoint_abstract";
-import { FileController } from "../../../controllers/file_controller";
+import { FileController } from "@controllers/file_controller";
 import { AppModule } from "./http_module";
-import { QueryValidator } from "../../validators/query_validators/query_validator";
+import { QueryValidator } from "@validators/query_validators/query_validator";
 import { NestLogger } from "./nest_logger";
 import { AllExceptionsFilter } from "./http-exception.filter";
 

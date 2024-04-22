@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { FilesHttpController } from './files.controller';
-import { FileController } from '../../../controllers/file_controller';
-import { QueryValidator } from '../../validators/query_validators/query_validator';
+import { FileController } from '@controllers/file_controller';
+import { QueryValidator } from '@validators/query_validators/query_validator';
 import { NestLogger } from './nest_logger';
 
 @Module({
