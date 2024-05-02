@@ -8,7 +8,7 @@ export class LocalFilePersister extends FilePersister {
   private basePath: string;
 
   constructor(basePath: string) {
-    super();
+    super('LocalFilePersister');
     this.basePath = basePath;
   }
 

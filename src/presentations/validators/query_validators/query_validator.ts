@@ -4,6 +4,10 @@ import { Validator } from '../validator_abstract';
 import { plainToInstance } from 'class-transformer';
 
 export class QueryValidator extends Validator {
+  constructor() {
+    super('QueryValidator');
+  }
+
   async validate(dto: any, type: any): Promise<ValidationError[]> {
     if (!type) {
       throw new Error('Type is undefined. Cannot validate the DTO.');

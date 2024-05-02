@@ -14,7 +14,7 @@ import { Exception } from '@helpers/errors/exception_abstract';
 @Catch()
 export class AllExceptionsFilter extends Loggable implements ExceptionFilter {
   constructor(private readonly logger: NestLogger) {
-    super();
+    super('AllExceptionsFilter');
   }
 
   catch(exception: unknown, host: ArgumentsHost) {

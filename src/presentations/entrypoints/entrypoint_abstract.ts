@@ -7,8 +7,8 @@ export abstract class Entrypoint extends Loggable {
 
   protected queryValidator: QueryValidator;
 
-  constructor(fc: FileController, qv: QueryValidator) {
-    super();
+  constructor(fc: FileController, qv: QueryValidator, className: string) {
+    super(className);
     this.fileController = fc;
     this.queryValidator = qv;
   }

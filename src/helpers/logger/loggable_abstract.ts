@@ -4,7 +4,7 @@ import { LOGGER_SEVERITY, Logger } from './logger_abstract';
 export abstract class Loggable {
   protected loggers: Logger[];
 
-  constructor() {
+  constructor(private className: String) {
     this.loggers = [];
   }
 
@@ -13,7 +13,9 @@ export abstract class Loggable {
   }
 
   log(severity: LOGGER_SEVERITY, text: string, ...args: any[]): void {
-    this.loggers.forEach((logger) => logger.log(severity, text, ...args));
+    this.loggers.forEach((logger) =>
+      logger.log(severity, `[${this.className}] - ${text}`, ...args),
+    );
   }
 
   logSilly(text: string, ...args: any[]): void {

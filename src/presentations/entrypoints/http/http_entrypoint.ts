@@ -12,7 +12,7 @@ export class HttpEntrypoint extends Entrypoint {
   private nestLogger: NestLogger;
 
   constructor(fc: FileController, qv: QueryValidator, port: number) {
-    super(fc, qv);
+    super(fc, qv, 'HttpEntrypoint');
     this.port = port;
     this.nestLogger = new NestLogger();
   }

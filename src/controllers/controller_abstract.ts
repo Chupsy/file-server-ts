@@ -6,8 +6,8 @@ export abstract class Controller extends Loggable {
   protected dataPersister: DataPersister;
   protected filePersister: FilePersister;
 
-  constructor(dp: DataPersister, fp: FilePersister) {
-    super();
+  constructor(dp: DataPersister, fp: FilePersister, className: string) {
+    super(className);
     this.dataPersister = dp;
     this.filePersister = fp;
   }

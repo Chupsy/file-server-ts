@@ -4,7 +4,6 @@ import {
   Controller,
   Get,
   Inject,
-  NotFoundException,
   Param,
   Post,
   Res,
@@ -26,7 +25,7 @@ export class FilesHttpController extends Loggable {
     @Inject('QueryValidator') private queryValidator: QueryValidator,
     @Inject('NestLogger') private nestLogger: NestLogger,
   ) {
-    super();
+    super('FilesHttpController');
     this.registerLoggers(this.nestLogger.loggers);
   }
 
@@ -38,7 +37,6 @@ export class FilesHttpController extends Loggable {
       'Content-Disposition',
       `attachment; filename="${file.filename}"`,
     );
-    console.log('test');
     res.send(file.data);
   }
 
