@@ -8,6 +8,13 @@
     "target": "es2021",
     "outDir": "./dist",
     "baseUrl": "./src",
+    "paths": {
+      "presentations/*": ["presentations/*"],
+      "persistence/*": ["persistence/*"],
+      "helpers/*": ["helpers/*"],
+      "domain/*": ["domain/*"],
+      "controller/*": ["controller/*"]
+    },
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

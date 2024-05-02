@@ -6,7 +6,6 @@ export class Exception extends Error {
       super(message);
       this.message= message;
       this.internalCode = internalCode;
-      Error.captureStackTrace(this, this.constructor);
     }
 }
   
