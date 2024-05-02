@@ -1,41 +1,44 @@
-import { ConsoleLogger, Injectable, Scope } from "@nestjs/common";
-import {Logger as CustomLogger, LOGGER_SEVERITY} from "@helpers/logger/logger_abstract";
+/* eslint @typescript-eslint/no-explicit-any: 0 */
+import { ConsoleLogger, Injectable, Scope } from '@nestjs/common';
+import {
+  Logger as CustomLogger,
+  LOGGER_SEVERITY,
+} from '@helpers/logger/logger_abstract';
 
 @Injectable({ scope: Scope.TRANSIENT })
 export class NestLogger extends ConsoleLogger {
-    public loggers:CustomLogger[];
+  public loggers: CustomLogger[];
 
-    constructor(){
-        super();
-        this.loggers = [];
-    }
+  constructor() {
+    super();
+    this.loggers = [];
+  }
 
-    propagateLog(severity:LOGGER_SEVERITY, text:string, ...args : any[]):void {
-        this.loggers.forEach((logger)=> logger.log(severity, text, ...args));
-    }
+  propagateLog(severity: LOGGER_SEVERITY, text: string, ...args: any[]): void {
+    this.loggers.forEach((logger) => logger.log(severity, text, ...args));
+  }
 
-    log(message: string):void{
-        this.propagateLog(LOGGER_SEVERITY.INFO, message);
-    }
+  log(message: string): void {
+    this.propagateLog(LOGGER_SEVERITY.INFO, message);
+  }
 
-    debug(message: string):void{
-        this.propagateLog(LOGGER_SEVERITY.DEBUG, message);
-    }
+  debug(message: string): void {
+    this.propagateLog(LOGGER_SEVERITY.DEBUG, message);
+  }
 
-    verbose(message: string):void{
-        this.propagateLog(LOGGER_SEVERITY.INFO, message);
-    }
+  verbose(message: string): void {
+    this.propagateLog(LOGGER_SEVERITY.INFO, message);
+  }
 
-    warn(message: string):void{
-        this.propagateLog(LOGGER_SEVERITY.WARN, message);
-    }
+  warn(message: string): void {
+    this.propagateLog(LOGGER_SEVERITY.WARN, message);
+  }
 
-    error(message: string, trace: string):void{
-        this.propagateLog(LOGGER_SEVERITY.ERROR, message, trace);
-    }
+  error(message: string, trace: string): void {
+    this.propagateLog(LOGGER_SEVERITY.ERROR, message, trace);
+  }
 
-    registerLoggers(loggers:CustomLogger[]):void{
-        this.loggers = loggers;
-    }
-
+  registerLoggers(loggers: CustomLogger[]): void {
+    this.loggers = loggers;
+  }
 }

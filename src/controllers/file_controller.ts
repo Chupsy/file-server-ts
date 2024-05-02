@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-import { File } from "@domain/file";
-import { Controller } from "./controller_abstract";
-=======
-import { File } from '../domain/file';
+import { File } from '@domain/file';
 import { Controller } from './controller_abstract';
->>>>>>> 5904a69 (Add ESLint and relative path)
 
 export class FileController extends Controller {
   async saveFile(file: File): Promise<File> {
