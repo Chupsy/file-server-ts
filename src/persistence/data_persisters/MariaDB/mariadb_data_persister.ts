@@ -25,10 +25,10 @@ export class MariaDBPersister extends DataPersister {
   // PRIMARY KEY (id));
   async saveFile(file: File): Promise<File> {
     const connection = await this.pool.getConnection();
-    const res = await connection.query(`
-            INSERT INTO files (filename, mimeType)
-            VALUES ('${file.filename}', '${file.mimeType}');
-        `);
+    const query = `INSERT INTO files (filename, mimeType)
+    VALUES (?, ?);`;
+    const values = [file.filename, file.mimeType];
+    const res = await connection.query(query, values);
     connection.end();
 
     file.id = res.insertId;
