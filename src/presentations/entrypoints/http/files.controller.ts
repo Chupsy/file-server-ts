@@ -18,6 +18,7 @@ import { Loggable } from '@helpers/logger/loggable_abstract';
 import File from '@domain/file';
 import { NestLogger } from './nest_logger';
 import { Response } from 'express';
+import { BadRequestError } from '@helpers/errors/bad_request.exception';
 
 @Controller('files')
 export class FilesHttpController extends Loggable {
@@ -60,12 +61,8 @@ export class FilesHttpController extends Loggable {
         property: error.property,
         errors: error.constraints ? Object.values(error.constraints) : {},
       }));
-
       // Return this as a response with a 400 Bad Request status
-      throw new BadRequestException({
-        message: 'Validation failed',
-        errors: errorMessages,
-      });
+      throw new BadRequestError(errorMessages);
     }
 
     // Checking if the file is uploaded properly

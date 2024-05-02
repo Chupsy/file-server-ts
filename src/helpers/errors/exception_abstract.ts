@@ -1,10 +1,12 @@
 export class Exception extends Error {
-  public readonly internalCode: number;
-  public readonly message: string;
-
-  constructor(message: string, internalCode: number) {
+  constructor(
+    public readonly message: string,
+    public readonly internalCode: number,
+    public readonly errors?: {
+      property: string;
+      errors: {};
+    }[],
+  ) {
     super(message);
-    this.message = message;
-    this.internalCode = internalCode;
   }
 }

@@ -1,14 +1,16 @@
+import config from 'config';
+
 import { HttpEntrypoint } from '@presentations/entrypoints/http/http_entrypoint';
 import { FileController } from '@controllers/file_controller';
 import { Logger } from '@helpers/logger/logger_abstract';
 import { WinstonLogger } from '@helpers/logger/winston/winston';
 import { QueryValidator } from '@validators/query_validators/query_validator';
-import { MariaDBPersister } from '@persistence/data_persisters/mariadb/mariadb_data_persister';
+import { TypeormPersister } from '@persistence/data_persisters/typeorm/typeorm_data_persister';
 import { LocalFilePersister } from '@persistence/file_persisters/local_file_persister/local_file_persister';
 
 export class Runner {
   private filePersister: LocalFilePersister;
-  private dataPersister: MariaDBPersister;
+  private dataPersister: TypeormPersister;
   private fileController: FileController;
   private queryValidator: QueryValidator;
   private entrypoint: HttpEntrypoint;
@@ -16,7 +18,7 @@ export class Runner {
 
   constructor() {
     this.filePersister = new LocalFilePersister('/tmp');
-    this.dataPersister = new MariaDBPersister();
+    this.dataPersister = new TypeormPersister(config.get('persistence.config'));
     this.fileController = new FileController(
       this.dataPersister,
       this.filePersister,

@@ -1,14 +1,23 @@
 import { DataPersister } from '../data_persister_abstract';
 import File from '@domain/file';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
 
-export class MariaDBPersister extends DataPersister {
+export interface TypeormPersisterConfig {
+  type: string;
+  host: string;
+  port: number;
+  username: string;
+  database: string;
+  password: string;
+}
+
+export class TypeormPersister extends DataPersister {
   private dataSource: DataSource;
 
-  constructor() {
-    super('MariaDBPersister');
-    this.dataSource = new DataSource({
+  constructor(config: TypeormPersisterConfig) {
+    super('TypeormPersister');
+    const dataSourceOptions: DataSourceOptions = {
       type: 'mariadb',
       host: '127.0.0.1',
       port: 3306,
@@ -20,7 +29,8 @@ export class MariaDBPersister extends DataPersister {
       entities: [File],
       subscribers: [],
       migrations: [],
-    });
+    };
+    this.dataSource = new DataSource(dataSourceOptions);
   }
 
   public async initialize(): Promise<void> {

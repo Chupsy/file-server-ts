@@ -29,7 +29,7 @@ export class HttpEntrypoint extends Entrypoint {
         logger: this.nestLogger,
       },
     );
-    app.useGlobalFilters(new AllExceptionsFilter(this.nestLogger));
+    app.useGlobalFilters(new AllExceptionsFilter(this.loggers));
     await app.listen(this.port);
   }
 }
