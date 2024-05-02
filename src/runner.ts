@@ -35,6 +35,7 @@ export class Runner {
   }
 
   public async start() {
+    await this.dataPersister.initialize();
     await this.entrypoint.start();
   }
 }

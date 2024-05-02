@@ -15,6 +15,7 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateFileDto } from '@validators/query_validators/create_file_dto';
 import { QueryValidator } from '@validators/query_validators/query_validator';
 import { Loggable } from '@helpers/logger/loggable_abstract';
+import File from '@domain/file';
 import { NestLogger } from './nest_logger';
 import { Response } from 'express';
 
@@ -73,11 +74,13 @@ export class FilesHttpController extends Loggable {
     }
     const uploadedFile = files.file[0]; // Get the uploaded file
 
-    const file = await this.fileController.saveFile({
-      filename: body.filename,
-      mimeType: body.mimeType || uploadedFile.mimetype,
-      data: uploadedFile.buffer,
-    }); // Access form data via body
+    const file = await this.fileController.saveFile(
+      new File({
+        filename: body.filename,
+        mimeType: body.mimeType || uploadedFile.mimetype,
+        data: uploadedFile.buffer,
+      }),
+    ); // Access form data via body
 
     return `created file with ID ${file.id}`;
   }

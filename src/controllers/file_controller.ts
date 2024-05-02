@@ -1,4 +1,4 @@
-import { File } from '@domain/file';
+import File from '@domain/file';
 import { Controller } from './controller_abstract';
 import { FilePersister } from '@persistence/file_persisters/file_persister_abstract';
 import { DataPersister } from '@persistence/data_persisters/data_persister_abstract';

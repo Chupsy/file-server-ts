@@ -1,50 +1,41 @@
-import mariadb from 'mariadb';
 import { DataPersister } from '../data_persister_abstract';
-import { File } from '@domain/file';
+import File from '@domain/file';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
+import { DataSource } from 'typeorm';
 
 export class MariaDBPersister extends DataPersister {
-  private pool: mariadb.Pool;
+  private dataSource: DataSource;
 
   constructor() {
     super('MariaDBPersister');
-    this.pool = mariadb.createPool({
+    this.dataSource = new DataSource({
+      type: 'mariadb',
       host: '127.0.0.1',
       port: 3306,
-      user: 'root',
+      username: 'root',
       database: 'files',
-      password: 'my-secret-pw',
-      connectionLimit: 5,
+      password: 'mypass',
+      synchronize: true,
+      logging: true,
+      entities: [File],
+      subscribers: [],
+      migrations: [],
     });
   }
 
-  // CREATE TABLE files (
-  // id MEDIUMINT NOT NULL AUTO_INCREMENT,
-  // filename CHAR(30) NOT NULL,
-  // mimeType CHAR(30),
-  // PRIMARY KEY (id));
-  async saveFile(file: File): Promise<File> {
-    const connection = await this.pool.getConnection();
-    const query = `INSERT INTO files (filename, mimeType)
-    VALUES (?, ?);`;
-    const values = [file.filename, file.mimeType];
-    const res = await connection.query(query, values);
-    connection.end();
+  public async initialize(): Promise<void> {
+    await this.dataSource.initialize();
+  }
 
-    file.id = res.insertId;
+  async saveFile(file: File): Promise<File> {
+    await this.dataSource.manager.save(file);
     return file;
   }
 
   async getFile(fileId: number): Promise<File> {
-    const connection = await this.pool.getConnection();
-    const query = 'SELECT id, filename, mimeType FROM files WHERE id = ?';
-    const values = [fileId];
-    const res = await connection.query(query, values);
-    connection.end();
-
-    if (res.length > 0) {
-      const { id, filename, mimeType } = res[0];
-      return { id, filename, mimeType };
+    const file = await this.dataSource.manager.findOneBy(File, { id: fileId });
+    if (file) {
+      return file;
     } else {
       throw new FileNotFoundError();
     }

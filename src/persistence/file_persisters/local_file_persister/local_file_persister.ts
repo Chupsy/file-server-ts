@@ -1,6 +1,6 @@
 import path from 'path';
 import { promises as fs } from 'fs';
-import { File } from '@domain/file';
+import File from '@domain/file';
 import { FilePersister } from '../file_persister_abstract';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
 
