@@ -19,7 +19,8 @@ import { Loggable } from '@helpers/logger/loggable_abstract';
 import File from '@domain/file';
 import { NestLogger } from './nest_logger';
 import { Response } from 'express';
-import { BadRequestError } from '@helpers/errors/bad_request.exception';
+import { GetFileDto } from '@presentations/validators/query_validators/get_file_dto';
+import { DeleteFileDto } from '@presentations/validators/query_validators/delete_file_dto';
 
 @Controller('files')
 export class FilesHttpController extends Loggable {
@@ -34,6 +35,8 @@ export class FilesHttpController extends Loggable {
 
   @Get(':id')
   async findOne(@Param('id') id: number, @Res() res: Response): Promise<void> {
+    await this.queryValidator.validate({ id }, GetFileDto);
+
     const file = await this.fileController.getFile(id);
     res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
     res.setHeader(
@@ -55,22 +58,12 @@ export class FilesHttpController extends Loggable {
     files: { file?: Express.Multer.File[]; data?: Express.Multer.File[] },
     @Body() body: CreateFileDto,
   ): Promise<string> {
-    const errors = await this.queryValidator.validate(body, CreateFileDto);
-    if (errors.length > 0) {
-      // Construct a detailed error message or a structured error object
-      const errorMessages = errors.map((error) => ({
-        property: error.property,
-        errors: error.constraints ? Object.values(error.constraints) : {},
-      }));
-      // Return this as a response with a 400 Bad Request status
-      throw new BadRequestError(errorMessages);
-    }
+    await this.queryValidator.validate(body, CreateFileDto);
 
-    // Checking if the file is uploaded properly
     if (!files.file || files.file.length === 0) {
       throw new BadRequestException('No file uploaded');
     }
-    const uploadedFile = files.file[0]; // Get the uploaded file
+    const uploadedFile = files.file[0];
 
     const file = await this.fileController.saveFile(
       new File({
@@ -78,15 +71,16 @@ export class FilesHttpController extends Loggable {
         mimeType: body.mimeType || uploadedFile.mimetype,
         data: uploadedFile.buffer,
       }),
-    ); // Access form data via body
+    );
 
     return `created file with ID ${file.id}`;
   }
 
   @Delete(':id')
   async deleteOne(@Param('id') id: number): Promise<string> {
+    await this.queryValidator.validate({ id }, DeleteFileDto);
+
     await this.fileController.deleteFile(id);
-    console.log('file delete');
     return `deleted file with ID ${id}`;
   }
 }
