@@ -47,4 +47,8 @@ export class TypeormPersister extends DataPersister {
       throw new FileNotFoundError();
     }
   }
+
+  async deleteFile(file: File): Promise<void> {
+    await this.dataSource.manager.softDelete(File, { id: file.id });
+  }
 }

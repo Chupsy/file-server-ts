@@ -4,6 +4,7 @@ import {
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity('files')
@@ -44,6 +45,9 @@ export default class File {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updatedAt?: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
 
 interface FileData {

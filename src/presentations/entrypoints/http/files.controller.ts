@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Inject,
   Param,
@@ -80,5 +81,12 @@ export class FilesHttpController extends Loggable {
     ); // Access form data via body
 
     return `created file with ID ${file.id}`;
+  }
+
+  @Delete(':id')
+  async deleteOne(@Param('id') id: number): Promise<string> {
+    await this.fileController.deleteFile(id);
+    console.log('file delete');
+    return `deleted file with ID ${id}`;
   }
 }

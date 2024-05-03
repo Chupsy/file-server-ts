@@ -19,4 +19,9 @@ export class FileController extends Controller {
     const f: File = await this.dataPersister.getFile(id);
     return this.filePersister.getFile(f);
   }
+
+  async deleteFile(id: number): Promise<void> {
+    const f: File = await this.dataPersister.getFile(id);
+    return await this.dataPersister.deleteFile(f);
+  }
 }
