@@ -1,0 +1,13 @@
+{
+    "persistence" : {
+        "type": "typeorm",
+        "config": {
+            "type": "postgres",
+            "host": "127.0.0.1",
+            "port": 5432,
+            "username": "postgres",
+            "database": "files",
+            "password": "mypass"
+        }
+    }
+}

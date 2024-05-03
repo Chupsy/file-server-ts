@@ -1,7 +1,7 @@
 import { DataPersister } from '../data_persister_abstract';
 import File from '@domain/file';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
-import { DataSource, DataSourceOptions } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 export interface TypeormPersisterConfig {
   type: string;
@@ -17,11 +17,8 @@ export class TypeormPersister extends DataPersister {
 
   constructor(config: TypeormPersisterConfig) {
     super('TypeormPersister');
-    const dataSourceOptions: DataSourceOptions = {
-      type: 'mariadb',
-      host: '127.0.0.1',
-      port: 3306,
-      username: 'root',
+    const dataSourceOptions: any = {
+      ...config,
       database: 'files',
       password: 'mypass',
       synchronize: true,
