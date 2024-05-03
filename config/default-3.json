@@ -9,5 +9,11 @@
             "database": "files",
             "password": "mypass"
         }
+    },
+    "validators" : {
+        "filesize":{
+            "minSize": 30000,
+            "maxSize": 200000
+        }
     }
 }
