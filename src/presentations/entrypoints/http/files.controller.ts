@@ -72,6 +72,7 @@ export class FilesHttpController extends Loggable {
       new File({
         filename: body.filename,
         mimeType: body.mimeType || uploadedFile.mimetype,
+        category: body.category,
         data: uploadedFile.buffer,
       }),
     );

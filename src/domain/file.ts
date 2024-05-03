@@ -13,6 +13,7 @@ export default class File {
     if (params) {
       this.id = params.id;
       this.filename = params.filename;
+      this.category = params.category;
       this.data = params.data;
       this.mimeType = params.mimeType;
       this.createdAt = params.createdAt;
@@ -32,6 +33,11 @@ export default class File {
 
   @Column()
   mimeType?: string;
+
+  @Column({
+    nullable: true,
+  })
+  category?: string;
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -53,6 +59,7 @@ export default class File {
 interface FileData {
   id?: number;
   filename: string;
+  category?: string;
   data?: Buffer;
   mimeType?: string;
   createdAt?: Date;

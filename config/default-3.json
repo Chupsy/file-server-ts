@@ -12,7 +12,7 @@
     },
     "validators" : {
         "filesize":{
-            "minSize": 30000,
+            "minSize": 200,
             "maxSize": 200000
         }
     }
