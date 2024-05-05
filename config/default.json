@@ -1,0 +1,19 @@
+{
+    "persistence" : {
+        "type": "typeorm",
+        "config": {
+            "type": "mariadb",
+            "host": "127.0.0.1",
+            "port": 3306,
+            "username": "root",
+            "database": "files",
+            "password": "my-secret-pw"
+        }
+    },
+    "validators" : {
+        "fileSize":{
+            "minSize": 200,
+            "maxSize": 200000
+        }
+    }
+}

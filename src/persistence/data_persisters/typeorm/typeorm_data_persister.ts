@@ -2,6 +2,7 @@ import { DataPersister } from '../data_persister_abstract';
 import File from '@domain/file';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
 import { DataSource } from 'typeorm';
+import { TypeORMLogger } from './typeorm_logger';
 
 export interface TypeormPersisterConfig {
   type: string;
@@ -14,23 +15,26 @@ export interface TypeormPersisterConfig {
 
 export class TypeormPersister extends DataPersister {
   private dataSource: DataSource;
+  private typeOrmLogger: TypeORMLogger;
 
   constructor(config: TypeormPersisterConfig) {
     super('TypeormPersister');
+    this.typeOrmLogger = new TypeORMLogger();
     const dataSourceOptions: any = {
       ...config,
       database: 'files',
-      password: 'mypass',
       synchronize: true,
       logging: true,
       entities: [File],
       subscribers: [],
       migrations: [],
+      logger: this.typeOrmLogger,
     };
     this.dataSource = new DataSource(dataSourceOptions);
   }
 
   public async initialize(): Promise<void> {
+    this.typeOrmLogger.registerLoggers(this.loggers);
     await this.dataSource.initialize();
   }
 
