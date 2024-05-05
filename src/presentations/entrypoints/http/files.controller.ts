@@ -87,4 +87,17 @@ export class FilesHttpController extends Loggable {
     await this.fileController.deleteFile(id);
     return `deleted file with ID ${id}`;
   }
+
+  @Get(':id/metadata')
+  async getFileMetadata(
+    @Param('id') id: number,
+  ): Promise<{ message: string; file: File }> {
+    await this.queryValidator.validate({ id }, GetFileDto);
+
+    const file = await this.fileController.getFileMetadata(id);
+    return {
+      message: 'File found',
+      file,
+    };
+  }
 }
