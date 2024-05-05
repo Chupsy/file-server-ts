@@ -37,7 +37,7 @@ export class Runner {
       this.fileSizeValidator,
       3000,
     );
-    this.loggers = [new WinstonLogger()];
+    this.loggers = [new WinstonLogger(config.get('loggers'))];
     this.entrypoint.registerLoggers(this.loggers);
     this.fileController.registerLoggers(this.loggers);
     this.filePersister.registerLoggers(this.loggers);

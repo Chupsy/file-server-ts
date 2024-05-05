@@ -1,13 +1,13 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 export enum LOGGER_SEVERITY {
-  SILLY,
-  TRACE,
-  DEBUG,
-  INFO,
-  WARN,
-  ERROR,
-  FATAL,
+  SILLY = 'silly',
+  TRACE = 'trace',
+  DEBUG = 'debug',
+  INFO = 'info',
+  WARN = 'warn',
+  ERROR = 'error',
+  FATAL = 'fatal',
 }
 
 export abstract class Logger {
