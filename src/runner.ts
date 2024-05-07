@@ -109,9 +109,12 @@ export class Runner {
     if (!config) {
       config = defaultTypeormPersisterConfig;
     }
-    this.dataPersister = DataPersisterClass
-      ? new DataPersisterClass(config)
-      : new TypeormPersister(config);
+    if (DataPersisterClass) {
+      this.dataPersister = new DataPersisterClass(config);
+    } else {
+      this.dataPersister = new TypeormPersister(config);
+    }
+
     this.dataPersister.registerLoggers(this.loggers);
   }
 

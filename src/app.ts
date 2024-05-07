@@ -9,7 +9,6 @@ import { Runner } from './runner';
 dotenv.config();
 const runner = new Runner();
 runner.registerDataPersister(config.get('persistence.config'));
-runner.registerDataPersister();
 runner.registerFilePersister();
 runner.registerControllers();
 runner.registerEntrypoints();

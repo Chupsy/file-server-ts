@@ -1,6 +1,6 @@
 import path from 'path';
 import { promises as fs } from 'fs';
-import File from '@domain/file';
+import File, { FileWithData } from '@domain/file';
 import { FilePersister } from '../file_persister_abstract';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
 
@@ -17,7 +17,7 @@ export class LocalFilePersister extends FilePersister<LocalFilePersisterConfig> 
     super('LocalFilePersister', config);
   }
 
-  async saveFile(file: File): Promise<File> {
+  async saveFile(file: FileWithData): Promise<FileWithData> {
     if (!file.data) {
       throw new Error('no data in file');
     }
@@ -30,11 +30,12 @@ export class LocalFilePersister extends FilePersister<LocalFilePersisterConfig> 
       throw new Error('Failed to save file: ' + error);
     }
   }
-  async getFile(file: File): Promise<File> {
+  async getFile(file: File): Promise<FileWithData> {
     const filePath = path.join(this.config.basePath, file.filename);
     try {
-      file.data = await fs.readFile(filePath);
-      return file;
+      const fileWithData = new FileWithData(file);
+      fileWithData.data = await fs.readFile(filePath);
+      return fileWithData;
     } catch (error) {
       throw new FileNotFoundError();
     }

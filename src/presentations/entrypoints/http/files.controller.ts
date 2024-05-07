@@ -38,7 +38,7 @@ export class FilesHttpController extends Loggable {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: number, @Res() res: Response): Promise<void> {
+  async findOne(@Param('id') id: string, @Res() res: Response): Promise<void> {
     await this.queryValidator.validate({ id }, GetFileDto);
 
     const file = await this.fileController.getFile(id);
@@ -63,7 +63,6 @@ export class FilesHttpController extends Loggable {
     @Body() body: CreateFileDto,
   ): Promise<string> {
     await this.queryValidator.validate(body, CreateFileDto);
-
     if (!files.file || files.file.length === 0) {
       throw new BadRequestException('No file uploaded');
     }
@@ -75,15 +74,15 @@ export class FilesHttpController extends Loggable {
         filename: body.filename,
         mimeType: body.mimeType || uploadedFile.mimetype,
         category: body.category,
-        data: uploadedFile.buffer,
       }),
+      uploadedFile.buffer,
     );
 
     return `created file with ID ${file.id}`;
   }
 
   @Delete(':id')
-  async deleteOne(@Param('id') id: number): Promise<string> {
+  async deleteOne(@Param('id') id: string): Promise<string> {
     await this.queryValidator.validate({ id }, DeleteFileDto);
 
     await this.fileController.deleteFile(id);
@@ -92,7 +91,7 @@ export class FilesHttpController extends Loggable {
 
   @Get(':id/metadata')
   async getFileMetadata(
-    @Param('id') id: number,
+    @Param('id') id: string,
   ): Promise<{ message: string; file: File }> {
     await this.queryValidator.validate({ id }, GetFileDto);
 
@@ -106,10 +105,11 @@ export class FilesHttpController extends Loggable {
   @Put(':id')
   @UseInterceptors(FileFieldsInterceptor([]))
   async updateFileMetadata(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() body: UpdateFileMetadataDto,
   ): Promise<{ message: string; file: File }> {
-    await this.queryValidator.validate({ id, ...body }, UpdateFileMetadataDto);
+    await this.queryValidator.validate(body, UpdateFileMetadataDto);
+    await this.queryValidator.validate({ id }, GetFileDto);
 
     const file = await this.fileController.updateFileMetadata(id, body);
     return {

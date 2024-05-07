@@ -14,7 +14,6 @@ export default class File {
       this.id = params.id;
       this.filename = params.filename;
       this.category = params.category;
-      this.data = params.data;
       this.mimeType = params.mimeType;
       this.createdAt = params.createdAt;
       this.updatedAt = params.updatedAt;
@@ -23,13 +22,11 @@ export default class File {
     }
   }
 
-  @PrimaryGeneratedColumn()
-  id?: number;
+  @PrimaryGeneratedColumn('uuid')
+  id?: string;
 
   @Column()
   filename: string;
-
-  data?: Buffer;
 
   @Column()
   mimeType?: string;
@@ -45,19 +42,24 @@ export default class File {
   })
   createdAt?: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamp',
-    default: () => 'CURRENT_TIMESTAMP(6)',
-    onUpdate: 'CURRENT_TIMESTAMP(6)',
-  })
+  @UpdateDateColumn()
   updatedAt?: Date;
 
   @DeleteDateColumn()
   deletedAt?: Date;
 }
 
+export class FileWithData extends File {
+  data: Buffer | undefined;
+
+  constructor(fileData: FileData) {
+    super(fileData);
+    this.data = fileData.data;
+  }
+}
+
 interface FileData {
-  id?: number;
+  id?: string;
   filename: string;
   category?: string;
   data?: Buffer;

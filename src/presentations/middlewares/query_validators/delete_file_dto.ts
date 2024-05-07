@@ -1,8 +1,8 @@
 import { Type } from 'class-transformer';
-import { IsInt } from 'class-validator';
+import { IsUUID } from 'class-validator';
 
 export class DeleteFileDto {
-  @IsInt({ message: 'File id must be an integer.' })
-  @Type(() => Number)
-  id!: number;
+  @IsUUID(undefined, { each: true, message: 'Id must be an UUID.' })
+  @Type(() => String)
+  id!: string;
 }

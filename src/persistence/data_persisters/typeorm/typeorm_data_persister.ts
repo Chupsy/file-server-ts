@@ -1,5 +1,5 @@
 import { DataPersister } from '../data_persister_abstract';
-import File from '@domain/file';
+import File, { FileWithData } from '@domain/file';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
 import { DataSource } from 'typeorm';
 import { TypeORMLogger } from './typeorm_logger';
@@ -52,7 +52,7 @@ export class TypeormPersister extends DataPersister<TypeormPersisterConfig> {
     return file;
   }
 
-  async getFile(fileId: number): Promise<File> {
+  async getFile(fileId: string): Promise<File> {
     const file = await this.dataSource.manager.findOneBy(File, { id: fileId });
     if (file) {
       return file;

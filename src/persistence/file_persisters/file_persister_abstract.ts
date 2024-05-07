@@ -1,6 +1,6 @@
 import { BaseConfig } from '@helpers/base_interfaces';
 import { Persister } from '../persister_abstract';
-import File from '@domain/file';
+import File, { FileWithData } from '@domain/file';
 
 export abstract class FilePersister<
   TConfig extends BaseConfig,
@@ -12,6 +12,6 @@ export abstract class FilePersister<
     super(className);
   }
 
-  abstract saveFile(file: File): Promise<File>;
-  abstract getFile(file: File): Promise<File>;
+  abstract saveFile(file: FileWithData): Promise<FileWithData>;
+  abstract getFile(file: File): Promise<FileWithData>;
 }
