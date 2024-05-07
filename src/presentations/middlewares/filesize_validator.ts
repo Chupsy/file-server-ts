@@ -1,8 +1,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
-import { Validator } from './validator_abstract';
+import { Middleware } from './middleware_abstract';
 import { BadRequestError } from '@helpers/errors/bad_request.exception';
 
-export class FileSizeValidator extends Validator {
+export class FileSizeValidator extends Middleware {
   constructor(
     private config:
       | {

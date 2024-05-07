@@ -13,12 +13,21 @@ export interface TypeormPersisterConfig {
   password: string;
 }
 
-export class TypeormPersister extends DataPersister {
+export const defaultTypeormPersisterConfig: TypeormPersisterConfig = {
+  type: 'mariadb',
+  host: '127.0.0.1',
+  port: 3306,
+  username: 'root',
+  database: 'files',
+  password: 'my-secret-pw',
+};
+
+export class TypeormPersister extends DataPersister<TypeormPersisterConfig> {
   private dataSource: DataSource;
   private typeOrmLogger: TypeORMLogger;
 
   constructor(config: TypeormPersisterConfig) {
-    super('TypeormPersister');
+    super('TypeormPersister', config);
     this.typeOrmLogger = new TypeORMLogger();
     const dataSourceOptions: any = {
       ...config,

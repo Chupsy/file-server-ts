@@ -13,15 +13,15 @@ import {
 } from '@nestjs/common';
 import { FileController } from '@controllers/file_controller';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { CreateFileDto } from '@validators/query_validators/create_file_dto';
-import { QueryValidator } from '@validators/query_validators/query_validator';
+import { CreateFileDto } from '@presentations/middlewares/query_validators/create_file_dto';
+import { QueryValidator } from '@presentations/middlewares/query_validators/query_validator';
 import { Loggable } from '@helpers/logger/loggable_abstract';
 import File from '@domain/file';
 import { NestLogger } from './nest_logger';
 import { Response } from 'express';
-import { GetFileDto } from '@presentations/validators/query_validators/get_file_dto';
-import { DeleteFileDto } from '@presentations/validators/query_validators/delete_file_dto';
-import { FileSizeValidator } from '@presentations/validators/filesize_validator';
+import { GetFileDto } from '@presentations/middlewares/query_validators/get_file_dto';
+import { DeleteFileDto } from '@presentations/middlewares/query_validators/delete_file_dto';
+import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
 
 @Controller('files')
 export class FilesHttpController extends Loggable {

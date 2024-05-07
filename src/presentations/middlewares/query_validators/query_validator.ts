@@ -1,10 +1,10 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import { validate } from 'class-validator';
-import { Validator } from '../validator_abstract';
+import { Middleware } from '../middleware_abstract';
 import { plainToInstance } from 'class-transformer';
 import { BadRequestError } from '@helpers/errors/bad_request.exception';
 
-export class QueryValidator extends Validator {
+export class QueryValidator extends Middleware {
   constructor() {
     super('QueryValidator');
   }

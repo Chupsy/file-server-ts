@@ -1,9 +1,9 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { FilesHttpController } from './files.controller';
 import { FileController } from '@controllers/file_controller';
-import { QueryValidator } from '@validators/query_validators/query_validator';
+import { QueryValidator } from '@presentations/middlewares/query_validators/query_validator';
 import { NestLogger } from './nest_logger';
-import { FileSizeValidator } from '@presentations/validators/filesize_validator';
+import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
 
 @Module({})
 export class AppModule {

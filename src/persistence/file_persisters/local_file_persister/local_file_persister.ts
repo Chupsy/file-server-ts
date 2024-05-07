@@ -4,19 +4,24 @@ import File from '@domain/file';
 import { FilePersister } from '../file_persister_abstract';
 import { FileNotFoundError } from '@helpers/errors/file_not_found.exception';
 
-export class LocalFilePersister extends FilePersister {
-  private basePath: string;
+export interface LocalFilePersisterConfig {
+  basePath: string;
+}
 
-  constructor(basePath: string) {
-    super('LocalFilePersister');
-    this.basePath = basePath;
+export const defaultLocalFilePersisterConfig: LocalFilePersisterConfig = {
+  basePath: '/tmp',
+};
+
+export class LocalFilePersister extends FilePersister<LocalFilePersisterConfig> {
+  constructor(config: LocalFilePersisterConfig) {
+    super('LocalFilePersister', config);
   }
 
   async saveFile(file: File): Promise<File> {
     if (!file.data) {
       throw new Error('no data in file');
     }
-    const filePath = path.join(this.basePath, file.filename);
+    const filePath = path.join(this.config.basePath, file.filename);
 
     try {
       await fs.writeFile(filePath, file.data);
@@ -26,7 +31,7 @@ export class LocalFilePersister extends FilePersister {
     }
   }
   async getFile(file: File): Promise<File> {
-    const filePath = path.join(this.basePath, file.filename);
+    const filePath = path.join(this.config.basePath, file.filename);
     try {
       file.data = await fs.readFile(filePath);
       return file;

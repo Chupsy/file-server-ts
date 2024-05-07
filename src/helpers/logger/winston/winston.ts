@@ -13,6 +13,16 @@ export interface WinstonConfig {
   ];
 }
 
+export const defaultWinstonConfig: WinstonConfig = {
+  level: LOGGER_SEVERITY.INFO,
+  transports: [
+    {
+      level: LOGGER_SEVERITY.INFO,
+      type: 'console',
+    },
+  ],
+};
+
 export class WinstonLogger extends Logger {
   private logger: winston.Logger;
 

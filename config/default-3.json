@@ -15,17 +15,5 @@
             "minSize": 200,
             "maxSize": 200000
         }
-    },
-    "loggers" : {
-        "level": "info",
-        "transports":[{
-          "level": "info",
-          "type": "console"
-        },
-        {
-          "level": "info",
-          "type": "file",
-          "filename": "info.log"
-        }]
     }
 }
