@@ -4,6 +4,7 @@ import {
   ArgumentsHost,
   HttpStatus,
   Injectable,
+  HttpException,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { Loggable } from '@helpers/logger/loggable_abstract';
@@ -13,7 +14,7 @@ import { Logger } from '@helpers/logger/logger_abstract';
 @Injectable()
 @Catch()
 export class AllExceptionsFilter extends Loggable implements ExceptionFilter {
-  constructor(loggers: Logger[]) {
+  constructor(readonly loggers: Logger[]) {
     super('AllExceptionsFilter');
     this.registerLoggers(loggers);
   }
@@ -25,18 +26,20 @@ export class AllExceptionsFilter extends Loggable implements ExceptionFilter {
     const status =
       exception instanceof Exception
         ? exception.internalCode
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+        : exception instanceof HttpException
+          ? exception.getStatus()
+          : HttpStatus.INTERNAL_SERVER_ERROR;
 
     const errorMessage =
-      exception instanceof Exception
+      exception instanceof Exception || exception instanceof HttpException
         ? exception.message
         : 'Internal server error';
+
     this.logError(`Error on ${request.method} ${request.url}`, exception);
 
     response.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
-      errors: exception instanceof Exception ? exception.errors : undefined,
       path: request.url,
       message: errorMessage,
     });
