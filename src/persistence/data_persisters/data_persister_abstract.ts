@@ -1,10 +1,13 @@
 import { BaseConfig } from '@helpers/base_interfaces';
 import { Persister } from '../persister_abstract';
-import File, { FileWithData } from '@domain/file';
+import File from '@domain/file';
+import { FileDataPersister } from './file_data_persister_abstract';
 
 export abstract class DataPersister<
   TConfig extends BaseConfig,
 > extends Persister {
+  protected fileDataPersister: FileDataPersister | undefined;
+
   constructor(
     className: string,
     public config: TConfig,
@@ -13,8 +16,5 @@ export abstract class DataPersister<
   }
 
   abstract initialize(): Promise<void>;
-  abstract saveFile(file: File): Promise<File>;
-  abstract getFile(fileId: string): Promise<File>;
-  abstract deleteFile(file: File): Promise<void>;
-  abstract updateFile(file: File): Promise<void>;
+  abstract getFileDataPersister(): FileDataPersister;
 }

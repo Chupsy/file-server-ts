@@ -10,36 +10,38 @@ export class FileController extends Controller {
   }
 
   async saveFile(file: File, data: Buffer): Promise<FileWithData> {
-    const savedFile = await this.dataPersister.saveFile(file);
+    const savedFile = await this.dataPersister
+      .getFileDataPersister()
+      .saveFile(file);
     const savedFileWithData = new FileWithData(savedFile);
     savedFileWithData.data = data;
     return this.filePersister.saveFile(savedFileWithData);
   }
 
   async getFile(id: string): Promise<FileWithData> {
-    const f: File = await this.dataPersister.getFile(id);
+    const f: File = await this.dataPersister.getFileDataPersister().getFile(id);
     return this.filePersister.getFile(f);
   }
 
   async deleteFile(id: string): Promise<void> {
-    const f: File = await this.dataPersister.getFile(id);
-    return await this.dataPersister.deleteFile(f);
+    const f: File = await this.dataPersister.getFileDataPersister().getFile(id);
+    return await this.dataPersister.getFileDataPersister().deleteFile(f);
   }
 
   async getFileMetadata(id: string): Promise<File> {
-    return await this.dataPersister.getFile(id);
+    return await this.dataPersister.getFileDataPersister().getFile(id);
   }
 
   async updateFileMetadata(
     id: string,
     updatedData: Partial<File>,
   ): Promise<File> {
-    const file = await this.dataPersister.getFile(id);
+    const file = await this.dataPersister.getFileDataPersister().getFile(id);
     const updatedFile: File = {
       ...file,
       ...updatedData,
     };
-    await this.dataPersister.updateFile(updatedFile);
+    await this.dataPersister.getFileDataPersister().updateFile(updatedFile);
     return updatedFile;
   }
 }
