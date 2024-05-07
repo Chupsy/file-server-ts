@@ -3,19 +3,34 @@ import { Controller } from './controller_abstract';
 import { FilePersister } from '@persistence/file_persisters/file_persister_abstract';
 import { DataPersister } from '@persistence/data_persisters/data_persister_abstract';
 import { BaseConfig } from '@helpers/base_interfaces';
+import { CategoryNotFoundError } from '@helpers/errors/category_not_found.exception';
 
 export class FileController extends Controller {
   constructor(dp: DataPersister<BaseConfig>, fp: FilePersister<BaseConfig>) {
     super(dp, fp, 'FileController');
   }
 
-  async saveFile(file: File, data: Buffer): Promise<FileWithData> {
+  async saveFile(
+    file: File,
+    data: Buffer,
+    categoryIds?: string[],
+  ): Promise<File> {
+    if (categoryIds && categoryIds.length) {
+      const categoriesFound = await this.dataPersister
+        .getCategoryDataPersister()
+        .getCategoriesById(categoryIds);
+      if (categoriesFound.length < categoryIds.length) {
+        throw new CategoryNotFoundError();
+      }
+      file.categories = categoriesFound;
+    }
     const savedFile = await this.dataPersister
       .getFileDataPersister()
       .saveFile(file);
     const savedFileWithData = new FileWithData(savedFile);
     savedFileWithData.data = data;
-    return this.filePersister.saveFile(savedFileWithData);
+    await this.filePersister.saveFile(savedFileWithData);
+    return savedFile;
   }
 
   async getFile(id: string): Promise<FileWithData> {

@@ -4,6 +4,9 @@ import { DataSource } from 'typeorm';
 import { TypeORMLogger } from './typeorm_logger';
 import { FileDataPersister } from '../file_data_persister_abstract';
 import { TypeormFileDataPersister } from './file_data_persister';
+import Category from '@domain/category';
+import { TypeormCategoryDataPersister } from './category_data_persister';
+import { CategoryDataPersister } from '../category_data_persister_abstract';
 
 export interface TypeormPersisterConfig {
   type: string;
@@ -35,13 +38,16 @@ export class TypeormPersister extends DataPersister<TypeormPersisterConfig> {
       database: 'files',
       synchronize: true,
       logging: true,
-      entities: [File],
+      entities: [File, Category],
       subscribers: [],
       migrations: [],
       logger: this.typeOrmLogger,
     };
     this.dataSource = new DataSource(dataSourceOptions);
     this.fileDataPersister = new TypeormFileDataPersister(this.dataSource);
+    this.categoryDataPersister = new TypeormCategoryDataPersister(
+      this.dataSource,
+    );
   }
 
   public async initialize(): Promise<void> {
@@ -52,5 +58,9 @@ export class TypeormPersister extends DataPersister<TypeormPersisterConfig> {
 
   public getFileDataPersister(): FileDataPersister {
     return this.fileDataPersister!;
+  }
+
+  public getCategoryDataPersister(): CategoryDataPersister {
+    return this.categoryDataPersister!;
   }
 }

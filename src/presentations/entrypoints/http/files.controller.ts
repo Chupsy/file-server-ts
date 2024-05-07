@@ -14,16 +14,17 @@ import {
 } from '@nestjs/common';
 import { FileController } from '@controllers/file_controller';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { CreateFileDto } from '@presentations/middlewares/query_validators/create_file_dto';
+import { CreateFileDto } from '@presentations/middlewares/query_validators/file/create_file_dto';
 import { QueryValidator } from '@presentations/middlewares/query_validators/query_validator';
 import { Loggable } from '@helpers/logger/loggable_abstract';
 import File from '@domain/file';
 import { NestLogger } from './nest_logger';
 import { Response } from 'express';
-import { GetFileDto } from '@presentations/middlewares/query_validators/get_file_dto';
-import { DeleteFileDto } from '@presentations/middlewares/query_validators/delete_file_dto';
+import { GetFileDto } from '@presentations/middlewares/query_validators/file/get_file_dto';
+import { DeleteFileDto } from '@presentations/middlewares/query_validators/file/delete_file_dto';
 import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
-import { UpdateFileMetadataDto } from '@presentations/middlewares/query_validators/update_file_metadata_dto';
+import { UpdateFileMetadataDto } from '@presentations/middlewares/query_validators/file/update_file_metadata_dto';
+import Category from '@domain/category';
 
 @Controller('files')
 export class FilesHttpController extends Loggable {
@@ -61,24 +62,23 @@ export class FilesHttpController extends Loggable {
     @UploadedFiles()
     files: { file?: Express.Multer.File[]; data?: Express.Multer.File[] },
     @Body() body: CreateFileDto,
-  ): Promise<string> {
+  ): Promise<{ message: string; file: File }> {
     await this.queryValidator.validate(body, CreateFileDto);
     if (!files.file || files.file.length === 0) {
       throw new BadRequestException('No file uploaded');
     }
     const uploadedFile = files.file[0];
     await this.fileSizeValidator.validate(uploadedFile.buffer.byteLength);
-
     const file = await this.fileController.saveFile(
       new File({
         filename: body.filename,
         mimeType: body.mimeType || uploadedFile.mimetype,
-        category: body.category,
       }),
       uploadedFile.buffer,
+      body.categories?.split(','),
     );
 
-    return `created file with ID ${file.id}`;
+    return { message: `created file with ID ${file.id}`, file };
   }
 
   @Delete(':id')

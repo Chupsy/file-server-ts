@@ -2,11 +2,14 @@ import { QueryValidator } from '@presentations/middlewares/query_validators/quer
 import { FileController } from '@controllers/file_controller';
 import { Loggable } from '@helpers/logger/loggable_abstract';
 import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
+import { CategoryController } from '@controllers/category_controller';
 
 interface BaseConfig {}
 
 export abstract class Entrypoint<TConfig extends BaseConfig> extends Loggable {
   protected fileController: FileController;
+
+  protected categoryController: CategoryController;
 
   protected queryValidator: QueryValidator;
 
@@ -14,6 +17,7 @@ export abstract class Entrypoint<TConfig extends BaseConfig> extends Loggable {
 
   constructor(
     fc: FileController,
+    cc: CategoryController,
     qv: QueryValidator,
     fsv: FileSizeValidator,
     className: string,
@@ -21,6 +25,7 @@ export abstract class Entrypoint<TConfig extends BaseConfig> extends Loggable {
   ) {
     super(className);
     this.fileController = fc;
+    this.categoryController = cc;
     this.queryValidator = qv;
     this.fileSizeValidator = fsv;
   }

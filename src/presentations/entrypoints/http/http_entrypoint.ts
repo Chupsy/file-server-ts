@@ -7,6 +7,7 @@ import { QueryValidator } from '@presentations/middlewares/query_validators/quer
 import { NestLogger } from './nest_logger';
 import { AllExceptionsFilter } from './http-exception.filter';
 import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
+import { CategoryController } from '@controllers/category_controller';
 
 export interface HttpEntrypointConfig {
   port: number;
@@ -21,11 +22,12 @@ export class HttpEntrypoint extends Entrypoint<HttpEntrypointConfig> {
 
   constructor(
     fc: FileController,
+    cc: CategoryController,
     qv: QueryValidator,
     private fsv: FileSizeValidator,
     config: HttpEntrypointConfig,
   ) {
-    super(fc, qv, fsv, 'HttpEntrypoint', config);
+    super(fc, cc, qv, fsv, 'HttpEntrypoint', config);
     this.nestLogger = new NestLogger();
   }
 
@@ -34,6 +36,7 @@ export class HttpEntrypoint extends Entrypoint<HttpEntrypointConfig> {
     const app = await NestFactory.create(
       AppModule.forRoot(
         this.fileController,
+        this.categoryController,
         this.queryValidator,
         this.fileSizeValidator,
         this.nestLogger,

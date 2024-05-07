@@ -2,10 +2,13 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Entity,
+  ManyToMany,
+  JoinTable,
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
+import Category from './category';
 
 @Entity('files')
 export default class File {
@@ -13,7 +16,7 @@ export default class File {
     if (params) {
       this.id = params.id;
       this.filename = params.filename;
-      this.category = params.category;
+      this.categories = params.categories;
       this.mimeType = params.mimeType;
       this.createdAt = params.createdAt;
       this.updatedAt = params.updatedAt;
@@ -31,10 +34,9 @@ export default class File {
   @Column()
   mimeType?: string;
 
-  @Column({
-    nullable: true,
-  })
-  category?: string;
+  @ManyToMany(() => Category)
+  @JoinTable()
+  categories?: Category[];
 
   @CreateDateColumn({
     type: 'timestamp',
@@ -61,7 +63,7 @@ export class FileWithData extends File {
 interface FileData {
   id?: string;
   filename: string;
-  category?: string;
+  categories?: Category[];
   data?: Buffer;
   mimeType?: string;
   createdAt?: Date;

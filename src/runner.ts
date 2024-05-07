@@ -27,6 +27,7 @@ import {
   TypeormPersisterConfig,
   defaultTypeormPersisterConfig,
 } from '@persistence/data_persisters/typeorm/typeorm_data_persister';
+import { CategoryController } from '@controllers/category_controller';
 
 export interface RunnerConfig {
   domain: {
@@ -38,6 +39,7 @@ export class Runner {
   private filePersister: FilePersister<any> | undefined;
   private dataPersister: DataPersister<any> | undefined;
   private fileController: FileController | undefined;
+  private categoryController: CategoryController | undefined;
   private queryValidator: QueryValidator;
   private fileSizeValidator: FileSizeValidator;
   private entrypoint: Entrypoint<any> | undefined;
@@ -128,7 +130,12 @@ export class Runner {
       this.dataPersister,
       this.filePersister,
     );
+    this.categoryController = new CategoryController(
+      this.dataPersister,
+      this.filePersister,
+    );
     this.fileController.registerLoggers(this.loggers);
+    this.categoryController.registerLoggers(this.loggers);
   }
 
   public registerEntrypoints<T extends Entrypoint<any>>(): void;
@@ -139,6 +146,7 @@ export class Runner {
     config: T['config'],
     EntrypointClass: new (
       fc: FileController,
+      cc: CategoryController,
       qv: QueryValidator,
       fsv: FileSizeValidator,
       config: T['config'],
@@ -148,12 +156,13 @@ export class Runner {
     config?: T['config'],
     EntrypointClass?: new (
       fc: FileController,
+      cc: CategoryController,
       qv: QueryValidator,
       fsv: FileSizeValidator,
       config: T['config'],
     ) => T,
   ): void {
-    if (!this.fileController) {
+    if (!this.fileController || !this.categoryController) {
       throw new Error('You must register your controllers first.');
     }
 
@@ -164,12 +173,14 @@ export class Runner {
     this.entrypoint = EntrypointClass
       ? new EntrypointClass(
           this.fileController,
+          this.categoryController,
           this.queryValidator,
           this.fileSizeValidator,
           config,
         )
       : new HttpEntrypoint(
           this.fileController,
+          this.categoryController,
           this.queryValidator,
           this.fileSizeValidator,
           config,

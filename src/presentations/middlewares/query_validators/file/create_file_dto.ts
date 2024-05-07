@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsOptional, IsString, Length } from 'class-validator';
+import { Type, Transform } from 'class-transformer';
+import { IsOptional, IsString, Length, IsArray, IsUUID } from 'class-validator';
 
 export class CreateFileDto {
   @IsString({ message: 'Filename must be a string.' })
@@ -13,9 +13,9 @@ export class CreateFileDto {
   @IsOptional()
   mimeType?: string;
 
-  @IsString({ message: 'Category must be a string.' })
-  @Length(1, 20, { message: 'Category must be between 1 and 20.' })
-  @Type(() => String)
+  @IsArray()
+  @IsUUID(undefined, { each: true })
   @IsOptional()
-  category?: string;
+  @Transform(({ value }) => value.toString().split(','))
+  categories?: string;
 }
