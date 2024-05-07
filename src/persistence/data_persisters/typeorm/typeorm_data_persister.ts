@@ -64,4 +64,8 @@ export class TypeormPersister extends DataPersister<TypeormPersisterConfig> {
   async deleteFile(file: File): Promise<void> {
     await this.dataSource.manager.softDelete(File, { id: file.id });
   }
+
+  async updateFile(file: File): Promise<void> {
+    await this.dataSource.manager.update(File, { id: file.id }, file);
+  }
 }

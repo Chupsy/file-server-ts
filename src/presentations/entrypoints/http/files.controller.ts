@@ -7,6 +7,7 @@ import {
   Inject,
   Param,
   Post,
+  Put,
   Res,
   UploadedFiles,
   UseInterceptors,
@@ -22,6 +23,7 @@ import { Response } from 'express';
 import { GetFileDto } from '@presentations/middlewares/query_validators/get_file_dto';
 import { DeleteFileDto } from '@presentations/middlewares/query_validators/delete_file_dto';
 import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
+import { UpdateFileMetadataDto } from '@presentations/middlewares/query_validators/update_file_metadata_dto';
 
 @Controller('files')
 export class FilesHttpController extends Loggable {
@@ -97,6 +99,21 @@ export class FilesHttpController extends Loggable {
     const file = await this.fileController.getFileMetadata(id);
     return {
       message: 'File found',
+      file,
+    };
+  }
+
+  @Put(':id')
+  @UseInterceptors(FileFieldsInterceptor([]))
+  async updateFileMetadata(
+    @Param('id') id: number,
+    @Body() body: UpdateFileMetadataDto,
+  ): Promise<{ message: string; file: File }> {
+    await this.queryValidator.validate({ id, ...body }, UpdateFileMetadataDto);
+
+    const file = await this.fileController.updateFileMetadata(id, body);
+    return {
+      message: 'File updated',
       file,
     };
   }

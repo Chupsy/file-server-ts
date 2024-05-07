@@ -27,4 +27,17 @@ export class FileController extends Controller {
   async getFileMetadata(id: number): Promise<File> {
     return await this.dataPersister.getFile(id);
   }
+
+  async updateFileMetadata(
+    id: number,
+    updatedData: Partial<File>,
+  ): Promise<File> {
+    const file = await this.dataPersister.getFile(id);
+    const updatedFile: File = {
+      ...file,
+      ...updatedData,
+    };
+    await this.dataPersister.updateFile(updatedFile);
+    return updatedFile;
+  }
 }

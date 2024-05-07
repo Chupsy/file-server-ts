@@ -42,6 +42,7 @@ export class AllExceptionsFilter extends Loggable implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       message: errorMessage,
+      errors: exception instanceof Exception ? exception.errors : undefined,
     });
   }
 }

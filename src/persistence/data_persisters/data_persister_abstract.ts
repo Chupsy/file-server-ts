@@ -16,4 +16,5 @@ export abstract class DataPersister<
   abstract saveFile(file: File): Promise<File>;
   abstract getFile(fileId: number): Promise<File>;
   abstract deleteFile(file: File): Promise<void>;
+  abstract updateFile(file: File): Promise<void>;
 }
