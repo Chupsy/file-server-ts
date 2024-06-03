@@ -8,9 +8,14 @@ import { NestLogger } from './nest_logger';
 import { AllExceptionsFilter } from './http-exception.filter';
 import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
 import { CategoryController } from '@controllers/category_controller';
+import {
+  HTTP_ROUTES,
+  RoutesEnabledInterceptor,
+} from './http_routes_enabled.interceptor';
 
 export interface HttpEntrypointConfig {
   port: number;
+  routes?: HTTP_ROUTES[];
 }
 
 export const defaultHttpEntrypointConfig: HttpEntrypointConfig = {
@@ -46,6 +51,7 @@ export class HttpEntrypoint extends Entrypoint<HttpEntrypointConfig> {
       },
     );
     app.useGlobalFilters(new AllExceptionsFilter(this.loggers));
+    app.useGlobalInterceptors(new RoutesEnabledInterceptor(this.config.routes));
     await app.listen(this.config.port);
   }
 }
