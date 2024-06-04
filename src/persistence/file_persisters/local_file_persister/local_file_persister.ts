@@ -40,4 +40,8 @@ export class LocalFilePersister extends FilePersister<LocalFilePersisterConfig> 
       throw new FileNotFoundError();
     }
   }
+
+  async init(): Promise<void> {
+    this.logInfo('LocalFilePersister init');
+  }
 }

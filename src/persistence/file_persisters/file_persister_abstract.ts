@@ -14,4 +14,6 @@ export abstract class FilePersister<
 
   abstract saveFile(file: FileWithData): Promise<FileWithData>;
   abstract getFile(file: File): Promise<FileWithData>;
+
+  abstract init(): Promise<void>;
 }

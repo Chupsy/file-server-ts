@@ -74,18 +74,20 @@ export class Runner {
     this.dataPersister?.registerLoggers(this.loggers);
   }
 
-  public registerFilePersister<T extends FilePersister<any>>(): void;
-  public registerFilePersister<T extends FilePersister<any>>(
+  public async registerFilePersister<
+    T extends FilePersister<any>,
+  >(): Promise<void>;
+  public async registerFilePersister<T extends FilePersister<any>>(
     config: LocalFilePersisterConfig,
-  ): void;
-  public registerFilePersister<T extends FilePersister<any>>(
+  ): Promise<void>;
+  public async registerFilePersister<T extends FilePersister<any>>(
     config: T['config'],
     FilePersisterClass: new (config: T['config']) => T,
-  ): void;
-  public registerFilePersister<T extends FilePersister<any>>(
+  ): Promise<void>;
+  public async registerFilePersister<T extends FilePersister<any>>(
     config?: T['config'],
     FilePersisterClass?: new (config: T['config']) => T,
-  ): void {
+  ): Promise<void> {
     if (!config) {
       config = defaultLocalFilePersisterConfig;
     }
@@ -93,6 +95,7 @@ export class Runner {
       ? new FilePersisterClass(config)
       : new LocalFilePersister(config);
     this.filePersister.registerLoggers(this.loggers);
+    await this.filePersister.init();
   }
 
   public registerDataPersister<T extends DataPersister<any>>(): void;
