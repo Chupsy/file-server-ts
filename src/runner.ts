@@ -78,7 +78,7 @@ export class Runner {
     T extends FilePersister<any>,
   >(): Promise<void>;
   public async registerFilePersister<T extends FilePersister<any>>(
-    config: LocalFilePersisterConfig,
+          config: LocalFilePersisterConfig,
   ): Promise<void>;
   public async registerFilePersister<T extends FilePersister<any>>(
     config: T['config'],
