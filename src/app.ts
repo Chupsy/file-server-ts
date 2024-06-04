@@ -8,7 +8,7 @@ import 'reflect-metadata';
 import { Runner } from './runner';
 
 dotenv.config();
-await (async () => {
+(async () => {
   const runner = new Runner();
   runner.registerDataPersister(config.get('persistence.config'));
   await runner.registerFilePersister();
@@ -16,4 +16,4 @@ await (async () => {
   runner.registerEntrypoints({ port: 3000 });
   runner.registerLoggers();
   runner.start();
-});
+})();

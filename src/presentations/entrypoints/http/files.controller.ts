@@ -15,7 +15,6 @@ import {
 import { FileController } from '@controllers/file_controller';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CreateFileDto } from '@presentations/middlewares/query_validators/file/create_file_dto';
-import { QueryValidator } from '@presentations/middlewares/query_validators/query_validator';
 import { Loggable } from '@helpers/logger/loggable_abstract';
 import File from '@domain/file';
 import { NestLogger } from './nest_logger';
@@ -24,13 +23,12 @@ import { GetFileDto } from '@presentations/middlewares/query_validators/file/get
 import { DeleteFileDto } from '@presentations/middlewares/query_validators/file/delete_file_dto';
 import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
 import { UpdateFileMetadataDto } from '@presentations/middlewares/query_validators/file/update_file_metadata_dto';
-import Category from '@domain/category';
+import { VALIDATE_REQUEST_TYPE, ValidateRequestInterceptor } from './http_middlewares/http_validate_request.interceptor';
 
 @Controller('files')
 export class FilesHttpController extends Loggable {
   constructor(
     @Inject('FileController') private fileController: FileController,
-    @Inject('QueryValidator') private queryValidator: QueryValidator,
     @Inject('FileSizeValidator') private fileSizeValidator: FileSizeValidator,
     @Inject('NestLogger') private nestLogger: NestLogger,
   ) {
@@ -39,9 +37,10 @@ export class FilesHttpController extends Loggable {
   }
 
   @Get(':id')
+  @UseInterceptors(
+    new ValidateRequestInterceptor(GetFileDto, VALIDATE_REQUEST_TYPE.PARAMS)
+  )
   async findOne(@Param('id') id: string, @Res() res: Response): Promise<void> {
-    await this.queryValidator.validate({ id }, GetFileDto);
-
     const file = await this.fileController.getFile(id);
     res.setHeader('Content-Type', file.mimeType || 'application/octet-stream');
     res.setHeader(
@@ -57,13 +56,13 @@ export class FilesHttpController extends Loggable {
       { name: 'file', maxCount: 1 },
       { name: 'data', maxCount: 1 },
     ]),
+    new ValidateRequestInterceptor(CreateFileDto, VALIDATE_REQUEST_TYPE.BODY)
   )
   async create(
     @UploadedFiles()
     files: { file?: Express.Multer.File[]; data?: Express.Multer.File[] },
     @Body() body: CreateFileDto,
   ): Promise<{ message: string; file: File }> {
-    await this.queryValidator.validate(body, CreateFileDto);
     if (!files.file || files.file.length === 0) {
       throw new BadRequestException('No file uploaded');
     }
@@ -82,19 +81,21 @@ export class FilesHttpController extends Loggable {
   }
 
   @Delete(':id')
+  @UseInterceptors(
+    new ValidateRequestInterceptor(DeleteFileDto, VALIDATE_REQUEST_TYPE.PARAMS)
+  )
   async deleteOne(@Param('id') id: string): Promise<string> {
-    await this.queryValidator.validate({ id }, DeleteFileDto);
-
     await this.fileController.deleteFile(id);
     return `deleted file with ID ${id}`;
   }
 
   @Get(':id/metadata')
+  @UseInterceptors(
+    new ValidateRequestInterceptor(GetFileDto, VALIDATE_REQUEST_TYPE.PARAMS)
+  )
   async getFileMetadata(
     @Param('id') id: string,
   ): Promise<{ message: string; file: File }> {
-    await this.queryValidator.validate({ id }, GetFileDto);
-
     const file = await this.fileController.getFileMetadata(id);
     return {
       message: 'File found',
@@ -103,14 +104,15 @@ export class FilesHttpController extends Loggable {
   }
 
   @Put(':id')
-  @UseInterceptors(FileFieldsInterceptor([]))
+  @UseInterceptors(
+    FileFieldsInterceptor([]),
+    new ValidateRequestInterceptor(GetFileDto, VALIDATE_REQUEST_TYPE.PARAMS),
+    new ValidateRequestInterceptor(UpdateFileMetadataDto, VALIDATE_REQUEST_TYPE.BODY)
+  )
   async updateFileMetadata(
     @Param('id') id: string,
     @Body() body: UpdateFileMetadataDto,
   ): Promise<{ message: string; file: File }> {
-    await this.queryValidator.validate(body, UpdateFileMetadataDto);
-    await this.queryValidator.validate({ id }, GetFileDto);
-
     const file = await this.fileController.updateFileMetadata(id, body);
     return {
       message: 'File updated',

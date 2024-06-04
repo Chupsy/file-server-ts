@@ -2,13 +2,15 @@
 import { Middleware } from './middleware_abstract';
 import { BadRequestError } from '@helpers/errors/bad_request.exception';
 
+export interface FileSizeValidatorConfig {
+  minSize: number;
+  maxSize: number;
+}
+
 export class FileSizeValidator extends Middleware {
   constructor(
     private config:
-      | {
-          minSize: number;
-          maxSize: number;
-        }
+      | FileSizeValidatorConfig
       | undefined,
   ) {
     super('FileSizeValidator');

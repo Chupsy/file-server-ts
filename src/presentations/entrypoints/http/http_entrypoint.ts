@@ -5,13 +5,13 @@ import { FileController } from '@controllers/file_controller';
 import { AppModule } from './http_module';
 import { QueryValidator } from '@presentations/middlewares/query_validators/query_validator';
 import { NestLogger } from './nest_logger';
-import { AllExceptionsFilter } from './http-exception.filter';
+import { AllExceptionsFilter } from './http_middlewares/http-exception.filter';
 import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
 import { CategoryController } from '@controllers/category_controller';
 import {
   HTTP_ROUTES,
   RoutesEnabledInterceptor,
-} from './http_routes_enabled.interceptor';
+} from './http_middlewares/http_routes_enabled.interceptor';
 
 export interface HttpEntrypointConfig {
   port: number;
@@ -29,7 +29,7 @@ export class HttpEntrypoint extends Entrypoint<HttpEntrypointConfig> {
     fc: FileController,
     cc: CategoryController,
     qv: QueryValidator,
-    private fsv: FileSizeValidator,
+    fsv: FileSizeValidator,
     config: HttpEntrypointConfig,
   ) {
     super(fc, cc, qv, fsv, 'HttpEntrypoint', config);
