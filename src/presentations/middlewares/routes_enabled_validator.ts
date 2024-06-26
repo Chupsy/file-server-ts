@@ -6,6 +6,7 @@ import {
   MethodNotAllowedException,
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import { Middleware, MiddlewareConfig, MiddlewareData } from './middleware_abstract';
 
 export enum HTTP_ROUTES {
   FILES_GET_ONE,
@@ -33,18 +34,26 @@ const ROUTES_MAPPING = {
   },
 };
 
-@Injectable()
-export class RoutesEnabledInterceptor implements NestInterceptor {
-  constructor(private routes?: HTTP_ROUTES[]) {}
+export interface RoutesEnabledValidatorConfig extends MiddlewareConfig{
+  routesEnabled?: HTTP_ROUTES[]
+}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    if (this.routes) {
-      const current_route = context.getArgByIndex(0).route;
+@Injectable()
+export class RoutesEnabledValidator extends Middleware<RoutesEnabledValidatorConfig, MiddlewareData> {
+
+  constructor(
+    public config: RoutesEnabledValidatorConfig
+  ) {
+    super('RoutesEnabledValidator', config);
+  }
+
+  async validate(data: MiddlewareData): Promise<void> {
+    if (this.config.routesEnabled && data.currentRoute) {
       let route_authorized = false;
-      this.routes.forEach((route: HTTP_ROUTES) => {
+      this.config.routesEnabled.forEach((route: HTTP_ROUTES) => {
         if (
-          ROUTES_MAPPING[route].path == current_route.path &&
-          current_route.methods[ROUTES_MAPPING[route].method]
+          ROUTES_MAPPING[route].path == data.currentRoute!.path &&
+          ROUTES_MAPPING[route].method == data.currentRoute!.method
         ) {
           route_authorized = true;
         }
@@ -53,6 +62,5 @@ export class RoutesEnabledInterceptor implements NestInterceptor {
         throw new MethodNotAllowedException();
       }
     }
-    return next.handle();
   }
 }

@@ -12,6 +12,7 @@ import { NestLogger } from './nest_logger';
 import Category from '@domain/category';
 import { CreateCategoryDto } from '@presentations/middlewares/query_validators/category/create_file_dto';
 import { CategoryController } from '@controllers/category_controller';
+import { VALIDATE_REQUEST_TYPE, ValidateRequestInterceptor } from './http_middlewares/http_validate_request.interceptor';
 
 @Controller('categories')
 export class CategoriesHttpController extends Loggable {
@@ -27,10 +28,12 @@ export class CategoriesHttpController extends Loggable {
 
   @Post()
   @UseInterceptors(FileFieldsInterceptor([]))
+  @UseInterceptors(
+    new ValidateRequestInterceptor(CreateCategoryDto, VALIDATE_REQUEST_TYPE.BODY)
+  )
   async create(
     @Body() body: CreateCategoryDto,
   ): Promise<{ message: string; category: Category }> {
-    await this.queryValidator.validate(body, CreateCategoryDto);
     const category = await this.categoryController.saveCategory(
       new Category({ name: body.name }),
     );

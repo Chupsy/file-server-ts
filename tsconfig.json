@@ -28,6 +28,6 @@
       "@domain/*": ["domain/*"],
     }
   },
-  "include": ["src/**/*.ts"],
+  "include": ["src/**/*.ts", "examples/**/*.ts"],
   "exclude": ["node_modules", "src/**/*.spec.ts"]
 }

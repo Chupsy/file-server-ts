@@ -1,19 +1,24 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 import { validate } from 'class-validator';
-import { Middleware } from '../middleware_abstract';
+import { Middleware, MiddlewareConfig, MiddlewareData } from '../middleware_abstract';
 import { plainToInstance } from 'class-transformer';
 import { BadRequestError } from '@helpers/errors/bad_request.exception';
 
-export class QueryValidator extends Middleware {
+interface QueryValidatorData extends MiddlewareData {
+  dto: any, 
+  type: any
+}
+
+export class QueryValidator extends Middleware<MiddlewareConfig, QueryValidatorData> {
   constructor() {
-    super('QueryValidator');
+    super('QueryValidator', {routes: []});
   }
 
-  async validate(dto: any, type: any): Promise<void> {
-    if (!type) {
+  async validate(data: QueryValidatorData): Promise<void> {
+    if (!data.type) {
       throw new Error('Type is undefined. Cannot validate the DTO.');
     }
-    const instance = plainToInstance(type, dto);
+    const instance = plainToInstance( data.dto, data.type);
     const errors = await validate(instance, { skipMissingProperties: false });
     if (errors.length > 0) {
       // Construct a detailed error message or a structured error object

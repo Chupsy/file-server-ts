@@ -1,5 +1,3 @@
-import path from 'path';
-import { promises as fs } from 'fs';
 import { S3 } from 'aws-sdk';
 import File, { FileWithData } from '@domain/file';
 import { FilePersister } from '../file_persister_abstract';

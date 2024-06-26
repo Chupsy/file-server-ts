@@ -21,7 +21,6 @@ import { NestLogger } from './nest_logger';
 import { Response } from 'express';
 import { GetFileDto } from '@presentations/middlewares/query_validators/file/get_file_dto';
 import { DeleteFileDto } from '@presentations/middlewares/query_validators/file/delete_file_dto';
-import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
 import { UpdateFileMetadataDto } from '@presentations/middlewares/query_validators/file/update_file_metadata_dto';
 import { VALIDATE_REQUEST_TYPE, ValidateRequestInterceptor } from './http_middlewares/http_validate_request.interceptor';
 
@@ -29,7 +28,6 @@ import { VALIDATE_REQUEST_TYPE, ValidateRequestInterceptor } from './http_middle
 export class FilesHttpController extends Loggable {
   constructor(
     @Inject('FileController') private fileController: FileController,
-    @Inject('FileSizeValidator') private fileSizeValidator: FileSizeValidator,
     @Inject('NestLogger') private nestLogger: NestLogger,
   ) {
     super('FilesHttpController');
@@ -67,7 +65,6 @@ export class FilesHttpController extends Loggable {
       throw new BadRequestException('No file uploaded');
     }
     const uploadedFile = files.file[0];
-    await this.fileSizeValidator.validate(uploadedFile.buffer.byteLength);
     const file = await this.fileController.saveFile(
       new File({
         filename: body.filename,

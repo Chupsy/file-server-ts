@@ -12,11 +12,10 @@ import {
   defaultWinstonConfig,
 } from '@helpers/logger/winston/winston';
 import { QueryValidator } from '@presentations/middlewares/query_validators/query_validator';
-import { FileSizeValidator } from '@presentations/middlewares/filesize_validator';
 import File from '@domain/file';
 import { FilePersister } from '@persistence/file_persisters/file_persister_abstract';
 import { DataPersister } from '@persistence/data_persisters/data_persister_abstract';
-import { Entrypoint } from '@presentations/entrypoints/entrypoint_abstract';
+import { Entrypoint, MiddlewareEntry } from '@presentations/entrypoints/entrypoint_abstract';
 import {
   LocalFilePersister,
   LocalFilePersisterConfig,
@@ -28,6 +27,7 @@ import {
   defaultTypeormPersisterConfig,
 } from '@persistence/data_persisters/typeorm/typeorm_data_persister';
 import { CategoryController } from '@controllers/category_controller';
+import { Middleware, MiddlewareConfig, MiddlewareData } from '@presentations/middlewares/middleware_abstract';
 
 export interface RunnerConfig {
   domain: {
@@ -41,18 +41,14 @@ export class Runner {
   private fileController: FileController | undefined;
   private categoryController: CategoryController | undefined;
   private queryValidator: QueryValidator;
-  private fileSizeValidator: FileSizeValidator;
   private entrypoint: Entrypoint<any> | undefined;
+  private middlewares : Middleware<any, any>[];
   private loggers: Logger[];
 
   constructor() {
     this.loggers = [];
+    this.middlewares = []
     this.queryValidator = new QueryValidator();
-    this.fileSizeValidator = new FileSizeValidator(
-      config.has('validators.filesize')
-        ? config.get('validators.filesize')
-        : undefined,
-    );
   }
 
   public async start() {
@@ -72,6 +68,7 @@ export class Runner {
     this.fileController?.registerLoggers(this.loggers);
     this.filePersister?.registerLoggers(this.loggers);
     this.dataPersister?.registerLoggers(this.loggers);
+    this.middlewares?.map(m => m.registerLoggers(this.loggers));
   }
 
   public async registerFilePersister<
@@ -151,7 +148,6 @@ export class Runner {
       fc: FileController,
       cc: CategoryController,
       qv: QueryValidator,
-      fsv: FileSizeValidator,
       config: T['config'],
     ) => T,
   ): void;
@@ -161,7 +157,6 @@ export class Runner {
       fc: FileController,
       cc: CategoryController,
       qv: QueryValidator,
-      fsv: FileSizeValidator,
       config: T['config'],
     ) => T,
   ): void {
@@ -178,17 +173,25 @@ export class Runner {
           this.fileController,
           this.categoryController,
           this.queryValidator,
-          this.fileSizeValidator,
           config,
         )
       : new HttpEntrypoint(
           this.fileController,
           this.categoryController,
           this.queryValidator,
-          this.fileSizeValidator,
           config,
         );
 
     this.entrypoint.registerLoggers(this.loggers);
+  }
+
+  public registerMiddleware<TConfig extends MiddlewareConfig>(
+    middlewareClass: new (config: TConfig) => Middleware<TConfig, MiddlewareData>,
+    config: TConfig
+  ){
+    if (!this.entrypoint) {
+      throw new Error('You must register your entrypoint first.');
+    }
+    this.middlewares.push(this.entrypoint.registerMiddleware(new middlewareClass(config)));
   }
 }

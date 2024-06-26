@@ -21,7 +21,7 @@ export class ValidateRequestInterceptor implements NestInterceptor {
   }
 
   async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
-    await this.queryValidator.validate(context.getArgByIndex(0)[this.type], this.dto)
+    await this.queryValidator.validate({type: context.getArgByIndex(0)[this.type], dto: this.dto})
 
     return next.handle();
   }

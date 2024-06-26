@@ -1,7 +1,15 @@
 import File from "@domain/file";
+import { CategoryDataPersister } from "@persistence/data_persisters/category_data_persister_abstract";
 import { DataPersister } from "@persistence/data_persisters/data_persister_abstract";
+import { FileDataPersister } from "@persistence/data_persisters/file_data_persister_abstract";
 
 export class CustomDataPersister extends DataPersister<{test: string}>{
+    getFileDataPersister(): FileDataPersister {
+        throw new Error("Method not implemented.");
+    }
+    getCategoryDataPersister(): CategoryDataPersister {
+        throw new Error("Method not implemented.");
+    }
 
     constructor(config: {test:string}){
         super("CustomDataPersister", config);

@@ -13,7 +13,6 @@ export class AppModule {
     fileController: FileController,
     categoryController: CategoryController,
     queryValidator: QueryValidator,
-    fileSizeValidator: FileSizeValidator,
     nestLogger: NestLogger,
   ): DynamicModule {
     return {
@@ -31,10 +30,6 @@ export class AppModule {
         {
           provide: 'QueryValidator',
           useValue: queryValidator,
-        },
-        {
-          provide: 'FileSizeValidator',
-          useValue: fileSizeValidator,
         },
         {
           provide: 'NestLogger',
